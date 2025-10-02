@@ -7,7 +7,7 @@ local scriptsByPlaceId = {
     [92827819645934]  = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Foxy",
     [17163559210]     = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Endo",
     [74221148357881]  = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Moon",
-    [1343871267]      = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/FredbearMegaRoleplay", -- Novo adicionado
+    [1343871267]      = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/FMR", -- Novo adicionado
 }
 
 -- Obtém PlaceId do jogo atual
