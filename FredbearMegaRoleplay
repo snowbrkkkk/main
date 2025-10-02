@@ -1,0 +1,67 @@
+-- Map de PlaceId -> URL do script
+local scriptsByPlaceId = {
+    [108015301318511] = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Fnaf1",
+    [17673168111]     = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/SisterLocation",
+    [12402976334]     = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Golden",
+    [79589802006248]  = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Frog",
+    [92827819645934]  = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Foxy",
+    [17163559210]     = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Endo",
+    [74221148357881]  = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/Moon",
+    [1343871267]      = "https://raw.githubusercontent.com/snowbrkkkk/main/refs/heads/main/FredbearMegaRoleplay", -- Novo adicionado
+}
+
+-- Obtém PlaceId do jogo atual
+local placeId = game.PlaceId
+
+-- Procura script correspondente
+local url = scriptsByPlaceId[placeId]
+
+if not url then
+    warn(string.format("Nenhum script configurado para PlaceId %s.", tostring(placeId)))
+    return
+end
+
+-- Tenta buscar e executar o script remoto de forma segura
+local ok, err = pcall(function()
+    local httpGet = nil
+    if (type(game.HttpGet) == "function") then
+        httpGet = function(u) return game:HttpGet(u) end
+    elseif (typeof(game.HttpGet) == "function") then
+        httpGet = function(u) return game:HttpGet(u) end
+    else
+        if syn and syn.request then
+            httpGet = function(u)
+                local r = syn.request({Url = u, Method = "GET"})
+                return r.Body
+            end
+        elseif request then
+            httpGet = function(u)
+                local r = request({Url = u, Method = "GET"})
+                return r.Body
+            end
+        else
+            error("Nenhuma função http disponível (game:HttpGet, syn.request, ou request).")
+        end
+    end
+
+    local source = httpGet(url)
+    if not source or #source == 0 then
+        error("Conteúdo vazio retornado da URL: " .. url)
+    end
+
+    local func, loadErr = loadstring(source)
+    if not func then
+        error("Erro ao compilar script remoto: " .. tostring(loadErr))
+    end
+
+    local sOk, sErr = pcall(func)
+    if not sOk then
+        error("Erro ao executar o script remoto: " .. tostring(sErr))
+    end
+end)
+
+if ok then
+    print("✅ Script carregado e executado com sucesso para PlaceId " .. tostring(placeId))
+else
+    warn("❌ Falha ao carregar/executar script: " .. tostring(err))
+end
